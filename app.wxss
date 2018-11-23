@@ -1,0 +1,10 @@
+/**app.wxss**/
+.container {
+  height: 100vh;
+  color:#fff;
+  box-sizing: border-box;
+  background:linear-gradient(#487eb5,#43a995);
+  padding:1px 10px;
+  font-size: 14px;
+  overflow: auto;
+} 

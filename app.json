@@ -1,0 +1,13 @@
+{
+  "pages": [
+    "pages/index/index"
+  ],
+  "window": {
+    "backgroundTextStyle": "#fff",
+    "navigationBarBackgroundColor": "#487eb5",
+    "navigationBarTitleText": "🌈小彩天气",
+    "navigationBarTextStyle": "#fff",
+    "backgroundColor":"#487eb5",
+    "enablePullDownRefresh": false
+  }
+}
