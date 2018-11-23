@@ -10,3 +10,7 @@
 
 - 直接搜索 小彩天气 即可。
 
+![logo](https://github.com/cccnoob/xcweather/blob/master/Screenshot_201811221418122.png)
+![扫码体验](https://github.com/cccnoob/xcweather/blob/master/gh_8d12744d57fa_258.jpg)
+        
+      
