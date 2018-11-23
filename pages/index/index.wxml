@@ -1,0 +1,75 @@
+<!--index.wxml-->
+<wxs module="dateFr" src="./filter.wxs"></wxs>
+<view class="container">
+  <!-- <view class='search'>
+    <input type='text' placeholder='请输入城市'  confirm-type='search'></input>
+    <icon type="search" class='btn' size="20" color="{{item}}"/>
+  </view> -->
+  
+  <view class='address pb'>
+   <image class='navimg' src='../img/navimg.png'></image>
+   <text bindtap='bindNav'>{{city.parent_city}},{{city.location}}</text>
+    <text class='changecity' bindtap='bindChooseAdd'>切换城市</text>
+  </view>
+  <view class='wemain '>
+    <view class='black now pb'>
+      <view>
+        <image wx:if="{{weatherData.now.cond_code}}" src='../img/{{weatherData.now.cond_code}}.png' ></image>
+      </view>
+      <view class='wd'><text class='wdnum'>{{weatherData.now.tmp}}</text>℃ </view>
+    </view>
+    <view class='black pb'>
+      <view>天气状况：{{weatherData.now.cond_txt}}</view>
+      <view>空气质量：{{airData.qlty}}</view>
+      <view>相对湿度：{{weatherData.now.hum}} %</view>
+      <view>PM2.5：{{airData.pm25}} μg/m³</view>
+    </view>
+  </view>
+  <view class='zhishu pb'>
+    <view class="items {{currentId==0?'active':''}}" data-current="0" bindtap="clickTab">
+      <image src='../img/uv.png' mode='widthFix'></image>
+      <view class='tit'>紫外线指数</view>
+      <view>{{weatherData.lifestyle[5].brf}}</view>
+    </view>
+    <view class="items {{currentId==1?'active':''}}" data-current="1" bindtap="clickTab">
+      <image src='../img/dressing.png' mode='widthFix'></image>
+      <view class='tit'>穿衣指数</view>
+      <view>{{weatherData.lifestyle[1].brf}}</view>
+    </view>
+    <view class="items {{currentId==2?'active':''}}" data-current="2" bindtap="clickTab">
+      <image src='../img/sport.png' mode='widthFix'></image>
+      <view class='tit'>运动指数</view>
+      <view>{{weatherData.lifestyle[3].brf}}</view>
+    </view>
+    <view class="items {{currentId==3?'active':''}}" data-current="3" bindtap="clickTab">
+      <image src='../img/car_washing.png' mode='widthFix'></image>
+      <view class='tit'>洗车指数</view>
+      <view>{{weatherData.lifestyle[6].brf}}</view>
+    </view>
+    <view class="items {{currentId==4?'active':''}}" data-current="4" bindtap="clickTab">
+      <image src='../img/flu.png' mode='widthFix'></image>
+      <view class='tit'>感冒指数</view>
+      <view>{{weatherData.lifestyle[2].brf}}</view>
+    </view>
+  </view>
+  <swiper class="scroll-view_H pb" current="{{currentId}}" duration="200" bindchange="swiperChange" style="width: 100%;height:100px;">
+    <swiper-item class="scroll-view-item">{{weatherData.lifestyle[5].txt}}</swiper-item>
+    <swiper-item class="scroll-view-item">{{weatherData.lifestyle[1].txt}}</swiper-item>
+    <swiper-item class="scroll-view-item">{{weatherData.lifestyle[3].txt}}</swiper-item>
+    <swiper-item class="scroll-view-item">{{weatherData.lifestyle[6].txt}}</swiper-item>
+    <swiper-item class="scroll-view-item">{{weatherData.lifestyle[2].txt}}</swiper-item>
+  </swiper>
+  <view class='weather-list pb'>
+    <view class='item' wx:for="{{weatherData.daily_forecast}}" wx:if="{{index != 0}}" wx:key="{{index}}">
+      <view>周{{dateFr.getDate(item.date)}}</view>
+      <view>
+        <image class='weimg' src="../img/{{item.cond_code_d }}.png" ></image>
+        {{item.cond_txt_d}}
+      </view>
+      <view>
+        {{item.tmp_min}}/{{item.tmp_max}}℃
+      </view>
+    </view>
+  </view>
+  <view class='updatatime'> <view class='time'>{{nowTime}} </view> <view> 数据支持：和风天气</view>  <view> 最近更新：{{weatherData.update.loc}} </view> </view>
+</view>

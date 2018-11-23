@@ -1,0 +1,39 @@
+/**index.wxss**/
+.pb{background:rgba(0,0,0,.1);border-radius: 5px;}
+.search{
+  position: relative;
+  /* display: flex; */
+  height:40px;
+  background: #fff;
+  margin:20rpx 0;
+  border-radius: 8rpx;
+  display: none;
+}
+.search input{width:100%;height:40px;line-height:40px;color:#333;font-size: 14px;padding:0 20rpx;}
+.search .btn{position: absolute;right:20rpx;top:10px;}
+.address{margin:20rpx 0;padding:20rpx 10rpx;font-size: 18px;}
+.time{font-size: 14px;}
+.changecity{float: right;margin-top:2px;padding-right:10rpx;font-size: 16px;}
+.address .navimg{width: 18px;height: 18px;vertical-align: -3px;}
+.wemain{display: flex;justify-content: space-between; margin:20rpx 0;}
+.wemain .black{width:49.5%;padding:5px 10px 5px;overflow: hidden;box-sizing: border-box;}
+.wemain .now{display:flex;justify-content:space-around;align-items: center;text-align: center;}
+.wemain .black image{width: 60px;height: 60px;}
+.wemain .text{font-size: 14px;}
+.wemain .wd{height:80px;line-height:80px;margin-left: 10px;}
+.wemain .wdnum{font-size: 60px;}
+
+.zhishu{display: flex;margin:20rpx 0;padding:20rpx 10rpx;}
+.zhishu .items{width: 20%;padding-bottom:10rpx;text-align: center;}
+.zhishu .items image{width: 60%;}
+.zhishu .items .tit{margin:8rpx 0;font-size: 12px;color:#bbb;}
+.zhishu .items.active{border-bottom: 2px solid rgb(247, 247, 247)}
+
+.weather-list{padding:5px 10px;font-size: 16px;}
+.weather-list .weimg{width: 30px;height:30px;vertical-align: -8px;}
+.weather-list .item{display: flex;justify-content: space-between;align-items: center;padding:5px 10px;border-bottom: 1rpx solid #999}
+.weather-list .item:last-child{border-bottom:0 none;}
+.updatatime{margin:20rpx 0;text-align:center;font-size: 12px;color: #cecece;}
+.updatatime .time{font-size:14px;}
+.scroll-view_H{margin:20rpx 0;text-indent: 2em;color:#cecece; }
+.scroll-view-item{width:100%;padding:20rpx;box-sizing: border-box;}
