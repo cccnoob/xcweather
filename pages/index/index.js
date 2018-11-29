@@ -46,7 +46,7 @@ Page({
       url: 'https://search.heweather.com/find?',
       data: {
         location: navData.longitude + ',' + navData.latitude,
-        key: '7b4c13953b5641a987c7ea28137ca402'
+        key: '和风天气key'
       },
       method: 'GET',
       success: function (res) {
@@ -127,7 +127,7 @@ Page({
       url: 'https://free-api.heweather.com/s6/weather',
       data: {
         location: that.data.city.location,
-        key: '7b4c13953b5641a987c7ea28137ca402'
+        key: '和风天气key'
       },
       method: 'GET',
       success: function (res) {
@@ -146,7 +146,7 @@ Page({
       url: 'https://free-api.heweather.com/s6/air/now',
       data: {
         location: that.data.city.parent_city,
-        key: '7b4c13953b5641a987c7ea28137ca402'
+        key: '和风天气key'
       },
       method: 'GET',
       success: function (res) {
