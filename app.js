@@ -8,7 +8,7 @@ App({
   },
   onShow: function (e) {
     const nowTime = new Date().getTime();
-    if (nowTime - this.globalData.hideTime > 160000){ //超出时间重新获取数据
+    if (nowTime - this.globalData.hideTime > 160000 && this.globalData.hideTime){ //超出时间重新获取数据
       this.getNavFun();
     }
   },

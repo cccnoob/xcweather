@@ -1,32 +1,41 @@
 //index.js
 //获取应用实例
 const app = getApp()
-const util = require('../../utils/util.js')
+const { formatTime } = require('../../utils/util');
+const { request } = require('../../utils/request');
 
 Page({
   data: {
     nowTime:'',
     city:{},
-    weatherData:{},
+    nowWeather: {},
+    indicesData: [],
+    weatherData: {},
     airData:{},
-    currentId: 0
+    currentId: 0,
+    indicesIcon: {
+      type1: '/pages/img/sport.png',
+      type2: '/pages/img/car_washing.png',
+      type3: '/pages/img/dressing.png',
+      type5: '/pages/img/uv.png',
+      type9: '/pages/img/flu.png',
+    },
   },
   onLoad: function () {
     this.setData({
-      nowTime: util.formatTime(new Date())
+      nowTime: formatTime(new Date())
     })
     if (app.globalData.address) {
-      this.getWeatherData(app.globalData.address);
+      this.getGeoCity(app.globalData.address);
     } else {
       // 由于 getUserInfo 是网络请求，可能会在 Page.onLoad 之后才返回
       // 所以此处加入 callback 以防止这种情况
       
       app.userInfoReadyCallback = res => {
         app.globalData.address = res;
-        this.getWeatherData(res);
+        this.getGeoCity(res);
       }
     }
-   
   },
   onPullDownRefresh:function(){//下拉
     const that = this;
@@ -37,44 +46,60 @@ Page({
       that.weatherFun();
     },300)
   },
-  getWeatherData: function (navData){
+  // 获取城市信息
+  getGeoCity: function (navData){
     const that = this;
     wx.showLoading({
       title: '加载中',
     })
-    wx.request({
-      url: 'https://search.heweather.com/find?',
+    request({
+      url: '/geo/v2/city/lookup?',
       data: {
         location: navData.longitude + ',' + navData.latitude,
-        key: '和风天气key'
       },
-      method: 'GET',
-      success: function (res) {
+    }).then(res => {
+      if (res.code === '200') {
         that.setData({
-          city: res.data.HeWeather6[0].basic[0],
+          city: res.location[0],
         })
+        that.getWeatherData(navData);
         that.weatherFun();
-      },
-      fail: function (res) {
-        console.log(res)
-      }
-    }) 
+      } 
+    })
   },
+  // 获取实时天气
+  getWeatherData: function (navData){
+    const that = this;
+    request({
+      url: '/v7/weather/now?',
+      data: {
+        location: navData.longitude + ',' + navData.latitude,
+      },
+    }).then(res => {
+      if (res.code === '200') {
+        that.setData({
+          nowWeather: res.now,
+        })
+      } 
+    })
+  },
+  // 切换城市
   bindChooseAdd:function(){
     var that = this;
     wx.chooseLocation({
       type: 'gcj02', //返回可以用于wx.openLocation的经纬度
       success(res) {
-        that.getWeatherData(res);
+        that.getGeoCity(res);
       }
     })
   },
+  // 获取定位图标
   bindNav:function(){
     var that = this;
     wx.getLocation({
       altitude: true,
       success: res => {
-        that.getWeatherData(res);
+        that.getGeoCity(res);
       },
       fail(res) {
         wx.showModal({
@@ -88,16 +113,16 @@ Page({
                     wx.getLocation({
                       altitude: true,
                       success: function (res) {
-                        that.getWeatherData(res);
+                        that.getGeoCity(res);
                       }
                     })
                   }else{ //未同意-直接返回
-                    that.getWeatherData(app.globalData.defaultNav);
+                    that.getGeoCity(app.globalData.defaultNav);
                   }
                 }
               })
             }else{//点击取消
-              that.getWeatherData(app.globalData.defaultNav);
+              that.getGeoCity(app.globalData.defaultNav);
             }
           }
         })
@@ -120,43 +145,70 @@ Page({
       currentId: e.detail.current
     })
   },
+  //天气集合
   weatherFun(){
     var that = this;
-    //天气集合
-    wx.request({
-      url: 'https://free-api.heweather.com/s6/weather',
+    const { city } = that.data;
+    // 天气指数
+    request({
+      url: '/v7/indices/1d?',
       data: {
-        location: that.data.city.location,
-        key: '和风天气key'
+        type:  '1,2,3,5,9',
+        location: city.lon + ',' + city.lat,
       },
-      method: 'GET',
-      success: function (res) {
+    }).then(res => {
+      if (res.code === '200') {
         that.setData({
-          weatherData: res.data.HeWeather6[0],
+          indicesData: res.daily,
         })
         wx.hideLoading();
-        // wx.stopPullDownRefresh();
-      },
-      fail: function (res) {
-        console.log(res)
-      }
+      } 
     })
+
     //空气质量
-    wx.request({
-      url: 'https://free-api.heweather.com/s6/air/now',
-      data: {
-        location: that.data.city.parent_city,
-        key: '和风天气key'
-      },
-      method: 'GET',
-      success: function (res) {
+    request({
+      url: `/airquality/v1/current/${city.lat}/${city.lon}`,
+    }).then(res => {
+      if (res) {
+        const obj = {}
+        const aqiItem = res?.indexes.find(item => item.code === 'cn-mee');
+        if (aqiItem) {
+          obj.quality = aqiItem;
+          const pm25 = res?.pollutants.find(item =>  item.code === 'pm2p5');
+          obj.pm25 = pm25.concentration.value;
+        }
         that.setData({
-          airData: res.data.HeWeather6[0].air_now_city,
+          airData: obj,
         })
-      },
-      fail: function (res) {
-        console.log(res)
       }
     })
+
+    // 七日天气预报
+    request({
+      url: '/v7/weather/7d?',
+      data: {
+        location: city.lon + ',' + city.lat,
+      },
+    }).then(res => {
+      if (res.code === '200') {
+        that.setData({
+          weatherData: { 
+            ...res,
+            updateTime: new Date(res.updateTime).toLocaleString(),
+          },
+        })
+      } 
+    })
+  },
+  onShareAppMessage() {
+    return {
+      title: '小彩天气',
+      page: 'pages/index/index',
+    }
+  },
+  onShareTimeline() {
+    return {
+      title: '小彩天气'
+    }
   }
 })
